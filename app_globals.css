@@ -1,0 +1,1475 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== Original site styles (preserved 1:1 for pixel-perfect parity) ===== */
+/* Core Layout & Theme Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+  background-color: #ffffff;
+  color: #ffffff;
+  line-height: 1.5;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Header Wrapper (Fixed to top of window) */
+.site_header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  transition: transform 0.3s ease; /* Enables smooth hide/show sliding */
+}
+
+/* 1. Top Announcement Marquee */
+.scroll_banner {
+  width: 100%;
+  overflow: hidden;
+  background-color: #121214;
+  border-bottom: 1px solid #222225;
+  padding: 10px 0;
+  white-space: nowrap;
+}
+
+.scroll_banner_track {
+  display: flex;
+  width: max-content;
+  animation: marquee 25s linear infinite;
+}
+
+.scroll_banner:hover .scroll_banner_track {
+  animation-play-state: paused;
+  cursor: pointer;
+}
+
+.banner_group {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.banner-item {
+  padding: 0 15px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* 2. Navigation Bar (Relative placement inside header) */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 5%;
+  background-color: transparent;
+  position: relative;
+  width: 100%;
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.3s ease,
+              backdrop-filter 0.3s ease,
+              border-color 0.3s ease;
+}
+
+/* Navigation Links */
+.navbar ul li a,
+.navbar a {
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #ffffff;
+  text-decoration: none;
+  position: relative;
+  display: inline-block;
+  transition: color 0.3s ease;
+}
+
+/* Icons and Logo */
+.navbar .icons img {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1);
+  transition: transform 0.2s ease, filter 0.3s ease;
+}
+
+.navbar .icons img:hover {
+  transform: scale(1.2);
+}
+
+.navbar ul {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+}
+
+.navbar .logo img {
+  height: 26px;
+  width: auto;
+}
+
+.navbar .icons {
+  display: flex;
+  gap: 1.25rem;
+}
+
+/* Link Hover Underline Effect */
+.navbar a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 1px;
+  background: #fff;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.navbar a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.navbar a:not(:hover)::after {
+  transform-origin: right;
+}
+
+/* Dark background state on scroll */
+.site_header.scrolled .navbar {
+  background-color: #1a1a1a;
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.site_header.scrolled .scroll_banner {
+  display: none; /* Smoothly hides banner once scrolled */
+}
+
+.site_header.hidden {
+  transform: translateY(-100%);
+}
+
+/* 3. Hero Section & Sliders */
+.hero-slider {
+  position: relative;
+}
+
+.slide_content {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  width: 100%;
+  height: 90vh; /* Sets slider height relative to viewport */
+  scrollbar-width: none;
+}
+
+.slide_content::-webkit-scrollbar {
+  display: none;
+}
+
+/* Container for each slide */
+.slide-item {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  position: relative; /* Crucial: allows absolute positioning inside */
+  height: 100%;
+}
+
+.slide-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Dot navigation for the hero slider */
+.slide-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 3;
+}
+
+.slide-dots .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid #fff;
+  background-color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.slide-dots .dot.active {
+  background-color: #000;
+  border-color: #000;
+}
+
+/* Absolute Overlay for Text & Button */
+.overlay-content {
+  position: absolute;
+  top: 50%;
+  left: 20%;
+  transform: translateY(-50%);
+  max-width: 500px;
+  z-index: 2;
+  color: #ffffff;
+}
+
+.slide-title {
+  font-family: Inter, sans-serif;
+  font-size: 50px;
+  font-weight: 600;
+  color: #ff0055; /* fallback if a slide has no theme class */
+  margin-bottom: 25px;
+  line-height: 1.1;
+}
+
+/* Per-slide title colors, matched to each slide's image theme.
+   Adjust the hex values to match your actual product photos. */
+.slide-theme-red .slide-title     { color: #a30649; } /* VGN F1 V5 Series */
+.slide-theme-silver .slide-title  { color: #a6a1bf; } /* VGN Flash 68HE Aluminum */
+.slide-theme-cyan .slide-title    { color: #0df6a0; } /* VGN Neon 75HE Air */
+.slide-theme-orange .slide-title  { color: #e60037; } /* VGN Neon 68HE Super Competitive */
+.slide-theme-green .slide-title   { color: #fff; } /* Dragonfly F2 Master */
+.slide-theme-blue .slide-title    { color: #1d87f8; } /* VGN V98Pro V4 */
+.slide-theme-purple .slide-title  { color: #fff; } /* VGN Dragonfly King */
+.slide-theme-blue .slide-text  { color: #000; } /* VGN V98Pro V4 */
+
+.slide-text {
+  font-family: Inter, sans-serif;
+  font-size: 24px;
+  line-height: 1.6;
+  font-weight: 400;
+  color: #e4e4e7;
+  margin-bottom: 45px;
+}
+
+/* VGN Style Transparent Border Button */
+.shop-now-btn {
+  display: inline-block;
+  padding: 11px 15px;
+  background: #000;
+  color: #fff;
+  box-shadow: 3px 3px 0 #c6e400;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.shop-now-btn a {
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.shop-now-btn:hover {
+  background: #fff;
+  box-shadow: 3px 3px 0 #6f6f6f;
+  color: #111;
+  border: 1px solid #333;
+  transform: translateY(-5px);
+}
+
+/* 4. Promotional Banner Section
+.moving_content {
+  text-align: center;
+  padding: 4rem 1rem;
+  background: linear-gradient(180deg, #121215 0%, #0b0b0c 100%);
+}
+
+.moving_content h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.moving_content p {
+  color: #a1a1aa;
+  margin-bottom: 1.5rem;
+}
+
+.shop_now {
+  display: inline-block;
+  padding: 10px;
+  background: #000;
+  color: #fff;
+  border: 1px solid #000;
+  box-shadow: 3px 3px 0 #c6e400;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.shop_now:hover {
+  background: #fff;
+  box-shadow: 3px 3px 0 #6f6f6f;
+  color: #111;
+  border: 1px solid #333;
+  transform: translateY(-5px);
+} */
+
+/* Inter font-ийг үндсэн шрифт болгох reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Hero Container */
+.dragonfly-hero {
+  position: relative;
+  width: 100%;
+  height: 85vh;
+  min-height: 520px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;          /* Босоо чиглэлд дунд нь авна */
+  justify-content: flex-start;    /* Хөндлөн чиглэлд зүүн талд нь байрлуулна */
+  padding-left: 12vw;           /* Зүүн талаас авах зайн хэмжээ */
+  background-color: #0d0d0d;
+}
+
+/* Дээрээс доошоо зөөлөн хөдлөх арын зураг */
+.hero-bg-image {
+  position: absolute;
+  top: -8%;
+  left: 0;
+  width: 100%;
+  height: 116%;
+  background-image: url('https://vgnlab.com/cdn/shop/files/VGN-Dragonfly-F1-Wireless-Mouse.png?v=1743652386&width=2000');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  animation: smoothFloatUpDown 6s ease-in-out infinite alternate;
+  z-index: 1;
+}
+
+@keyframes smoothFloatUpDown {
+  0% { transform: translateY(-16px); }
+  100% { transform: translateY(16px); }
+}
+
+/* Зүүн талд зэрэгцсэн текст ба контент */
+.hero-overlay-content {
+  position: relative;
+  z-index: 2;
+  text-align: left;
+  max-width: 400px;
+}
+
+/* Гарчиг */
+.hero-title {
+  font-size: 2.75rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.8px;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+
+/* Гарчиг доорх жижиг зураас */
+.title-divider {
+  width: 28px;
+  height: 2px;
+  background-color: #a3e000;
+  margin-bottom: 16px;
+}
+
+/* Тайлбар текст */
+.hero-subtitle {
+  font-size: 0.92rem;
+  font-weight: 400;
+  color: #e0e0e0;
+  line-height: 1.45;
+  margin-bottom: 26px;
+}
+
+/* Зураг шиг товчлуурын стиль */
+.shop-now-btn {
+  display: inline-block;
+  padding: 10px;
+  background: #000;
+  color: #fff;
+  border: 1px solid #000;
+  box-shadow: 3px 3px 0 #c6e400;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.shop-now-btn:hover {
+  background: #fff;
+  color: #111;
+  border: 1px solid #333;
+  transform: translateY(-5px);
+}
+
+/* ============================
+   Discover Our Products section
+   ============================ */
+
+.content_category h2,
+.best_seller h2 {
+  color: #000;
+  text-align: center;
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.5px;
+}
+
+.content_category,
+.best_seller {
+  padding: 4rem 5%;
+}
+
+/* --- Grids: categories + product/offer grids --- */
+.categories,
+.discounted_products,
+.best_seller_products,
+.special_offers_products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  padding: 5px 0px;
+  gap: 0rem;
+  margin-bottom: 3rem;
+}
+
+.categories a,
+.discounted_products a,
+.best_seller_products a,
+.special_offers_products a {
+  border-radius: 8px;
+  padding: 1rem;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.categories a:hover,
+.discounted_products a:hover,
+.best_seller_products a:hover {
+  border-color: #00f0ff;
+}
+
+.categories img,
+.discounted_products img,
+.best_seller_products img,
+.special_offers_products img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  transition: transform 0.3s ease;
+}
+
+.categories a:hover img,
+.discounted_products a:hover img,
+.best_seller_products a:hover img {
+  transform: scale(1.05) translateY(-5px);
+}
+
+/* --- Categories section: scaled up slightly, zooms in on load --- */
+.categories {
+  transform-origin: top center;
+  animation: scaleIn 0.5s ease forwards;
+}
+
+.categories a:hover img {
+  transform: scale(1.03); /* stronger zoom just for categories */
+}
+
+@keyframes scaleIn {
+  from { transform: scale(1); }
+  to   { transform: scale(1.05); }
+}
+
+
+/* ============================
+   New Arrivals — product cards
+   ============================ */
+
+.content_category .product-grid,
+.best_seller .product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 300px);
+  justify-content: center;
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .content_category .product-grid,
+.best_seller .product-grid { grid-template-columns: repeat(2, 300px); }
+}
+
+.content_category .product-card,
+.best_seller .product-card {
+  position: relative;
+  width: 300px;
+  height: 513.2px;
+  padding: 0px 15px;
+  text-align: center;
+}
+
+.content_category .sale-badge,
+.best_seller .sale-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #d0021b;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 3px 8px;
+  z-index: 2;
+}
+
+.content_category .sale-badge.free,
+.best_seller .sale-badge.free {
+  background: #000;
+}
+
+.content_category .product-image-link,
+.best_seller .product-image-link {
+  display: block;
+  overflow: hidden; /* keeps zoomed image contained within the card */
+}
+
+.content_category .product-image,
+.best_seller .product-image {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  transition: transform 0.3s ease, opacity 0.15s ease;
+  opacity: 1;
+  transition: opacity 0.25s ease-in-out;
+}
+
+.content_category .product-card:hover .product-image,
+.best_seller .product-card:hover .product-image {
+  transform: scale(1.05);
+}
+
+/* --- Sliding "Subscribe to 10% OFF" promo bar --- */
+.content_category .promo-marquee,
+.best_seller .promo-marquee {
+  width: 100%;
+  overflow: hidden;
+  background-color: #000;
+  margin-top: 10px;
+}
+
+.content_category .promo-marquee-track,
+.best_seller .promo-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: promoMarquee 3.5s linear infinite;
+}
+
+.content_category .promo-item,
+.best_seller .promo-item {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  padding: 6px 20px;
+  flex-shrink: 0;
+}
+
+@keyframes promoMarquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* --- Title + slide-in underline --- */
+.content_category .product-title,
+.best_seller .product-title {
+  margin-top: 12px;
+  font-size: 20px;
+}
+
+.content_category .product-title a,
+.best_seller .product-title a {
+  color: #222;
+  text-decoration: none;
+  position: relative;
+  display: inline-block;
+}
+
+.content_category .product-title a::after,
+.best_seller .product-title a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.content_category .product-card:hover .product-title a::after,
+.best_seller .product-card:hover .product-title a::after {
+  transform: scaleX(1);
+}
+
+/* 2. Add transition and lift effect to the product card itself */
+.content_category .product-card,
+.best_seller .product-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+}
+
+.content_category .product-card:hover,
+.best_seller .product-card:hover {
+  transform: translateY(-7px);
+}
+
+/* --- Price --- */
+.content_category .product-price,
+.best_seller .product-price {
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.content_category .old-price,
+.best_seller .old-price {
+  color: #999;
+  text-decoration: line-through;
+  margin-right: 6px;
+}
+
+.content_category .new-price,
+.best_seller .new-price {
+  color: #d0021b;
+  font-weight: bold;
+}
+
+/* --- Swatches --- */
+.content_category .swatches,
+.best_seller .swatches {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+  position: relative;
+}
+
+.content_category .swatch,
+.best_seller .swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+  background-size: cover;
+  background-position: center;
+}
+
+.content_category .swatch:hover,
+.best_seller .swatch:hover,
+.content_category .swatch.active,
+.best_seller .swatch.active {
+  border-color: #333;
+  transform: scale(1.1);
+}
+
+.content_category .swatch-tooltip,
+.best_seller .swatch-tooltip {
+  position: absolute;
+  top: -32px;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  background: #111;
+  color: #fff;
+  font-size: 12px;
+  white-space: nowrap;
+  padding: 4px 8px;
+  border-radius: 3px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease;
+  z-index: 10;
+}
+
+.content_category .swatch-tooltip::after,
+.best_seller .swatch-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #111;
+}
+
+.content_category .swatch-tooltip.visible,
+.best_seller .swatch-tooltip.visible {
+  opacity: 1;
+}
+
+/* --- Choose Options button --- */
+.content_category .choose-options,
+.best_seller .choose-options {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 10px;
+  background: #fff;
+  color: #111;
+  border: 1px solid #333;
+  box-shadow: 3px 3px 0 #c6e400;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.content_category .choose-options:hover,
+.best_seller .choose-options:hover {
+  background: #000;
+  box-shadow: 3px 3px 0 #6f6f6f;
+  color: #fff;
+  border: 1px solid #000;
+  transform: translateY(-5px);
+}
+
+/* --- Best Sellers / Special Offers tabs --- */
+.best_seller {
+  padding: 4rem 5%;
+  text-align: center;
+}
+
+.bestseller-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+.bestseller-tab {
+  background: none;
+  border: none;
+  padding: 0.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #a0a0a0;
+  cursor: pointer;
+  position: relative;
+}
+
+.bestseller-tab::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 3px;
+  background: #000;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.bestseller-tab.active {
+  color: #000;
+}
+
+.bestseller-tab.active::after {
+  transform: scaleX(1);
+}
+
+.bestseller-panel[hidden] {
+  display: none;
+}
+
+.vhub-section{position:relative;width:100%;height:80vh;min-height:500px;background:#000;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center}
+
+/* Арын зураг болон хурдан, зөөлөн хөдөлгөөнтэй эффект */
+.vhub-bg{
+  position:absolute;
+  inset:-12%;
+  background:url('https://vgnlab.com/cdn/shop/files/V-hub-banner.jpg?v=1744269024&width=1880') center/cover no-repeat;
+  background-attachment:fixed;
+  animation:smoothFloat 4s ease-in-out infinite alternate; /* Хугацааг 4s болгож хурдасгав */
+}
+
+@keyframes smoothFloat{
+  0%{transform:scale(1) translateY(-10px)}
+  100%{transform:scale(1.08) translateY(15px)}
+}
+
+/* Текст болон контент */
+.vhub-content{position:relative;z-index:2;color:#fff;max-width:650px;padding:0 20px}
+.vhub-title{font-size:clamp(32px,5vw,52px);font-weight:900;letter-spacing:1px;margin-bottom:16px;text-transform:uppercase}
+.vhub-desc{font-size:clamp(14px,1.8vw,18px);color:#e0e0e0;line-height:1.5;margin-bottom:32px;font-weight:400}
+
+/* Товчлуурын стил */
+.vhub-btn{
+  display:inline-block;
+  padding:10px;
+  background:#000;
+  color:#fff;
+  border:1px solid #000;
+  box-shadow:3px 3px 0 #c6e400;
+  cursor:pointer;
+  font-size:14px;
+  font-weight:bold;
+  text-decoration:none;
+  transition:all 0.2s ease;
+}
+.vhub-btn:hover{
+  background:#fff;
+  box-shadow:3px 3px 0 #6f6f6f;
+  color:#111;
+  border:1px solid #333;
+  transform:translateY(-5px);
+}
+
+@media(max-width:768px){
+  .vhub-bg{background-attachment:scroll}
+}
+
+
+/* --- About VGN --- */
+.about-vgn-section{width:100vw;height:100vh;background:#000;position:relative}
+.about-container{position:relative;width:100%;height:100%;background:url('https://vgnlab.com/cdn/shop/files/VGN-V87-Mechanical-keyboard.png?v=1743657656&width=2000') center/cover;display:flex;align-items:center;padding:0 8vw}
+
+.about-content{max-width:550px;color:#fff;z-index:2}
+.about-title{font-size:clamp(32px,5vw,56px);font-weight:800;letter-spacing:.5px;margin-bottom:12px}
+.title-underline{width:48px;height:3px;background:#fff;margin-bottom:24px}
+.about-subtitle{font-size:clamp(14px,1.5vw,18px);color:#e0e0e0;margin-bottom:40px}
+
+.learn-more-btn{display:inline-block;padding:10px;background:#000;color:#fff;border:1px solid #000;box-shadow:3px 3px 0 #c6e400;cursor:pointer;font-size:14px;font-weight:bold;text-decoration:none;transition:all 0.2s ease}
+.learn-more-btn:hover{background:#fff;box-shadow:3px 3px 0 #6f6f6f;color:#111;border:1px solid #333;transform:translateY(-5px)}
+
+.hotspot{position:absolute;cursor:pointer;z-index:5}
+.hotspot-tooltip{position:absolute;background:rgba(20,20,20,.92);color:#fff;padding:6px 14px;font-size:13px;font-weight:500;border:1px solid #666;white-space:nowrap;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .05s,visibility .05s}
+.hotspot:hover .hotspot-tooltip{opacity:1;visibility:visible}
+
+.hotspot-keyboard{right:12%;bottom:8%;width:25%;height:25%}
+.hotspot-keyboard .hotspot-tooltip{top:10%;left:20%}
+
+.hotspot-mouse{right:5%;bottom:22%;width:8%;height:12%}
+.hotspot-mouse .hotspot-tooltip{top:-30px;right:0}
+
+.hotspot-headset{right:4%;top:25%;width:12%;height:40%}
+.hotspot-headset .hotspot-tooltip{top:20%;left:-200px}
+
+.hotspot-monitor{right:22%;top:5%;width:32%;height:60%}
+.hotspot-monitor .hotspot-tooltip{top:15%;left:40%}
+
+@media (max-width:900px){.hotspot{display:none}}
+
+/* --- Featured Blog --- */
+.blog-section {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header */
+.blog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.blog-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111111;
+}
+
+.view-all-btn {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111111;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Container & Viewport */
+.blog-carousel-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.blog-viewport {
+  width: 100%;
+  overflow: hidden;
+  /* Хулгана очиход дээшээ өргөгдөх орон зайг олгоно */
+  padding: 15px 0;
+}
+
+.blog-track {
+  display: flex;
+  gap: 24px;
+  transition: transform 0.4s ease-in-out;
+}
+
+/* Card - Нийт 3 карт нэг дэлгэцэд харагдана */
+.blog-card {
+  min-width: calc((100% - 48px) / 3);
+  background: #ffffff;
+  border: 1px solid #eaeaea;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  /* Бусад картнаас дээшээ өргөгдөх transition */
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
+}
+
+/* ЭФФЕКТ 1: Хулгана очиход БҮХ КАРТ ДЭЭШЭЭ ӨРГӨГДӨЖ, бага зэрэг сүүдэр үүснэ */
+.blog-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Зургийн тохиргоо */
+.blog-image-wrapper {
+  width: 100%;
+  height: 230px;
+  overflow: hidden;
+  background-color: #f5f5f5;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.blog-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+/* ЭФФЕКТ 2: Зураг дотроо ZOOM хийгдэнэ */
+.blog-card:hover .blog-image-wrapper img {
+  transform: scale(1.05);
+}
+
+/* Текстэн хэсэг */
+.blog-info {
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111111;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 44px; /* Хоёр мөрөнд жигд тааруулна */
+}
+
+.card-desc {
+  font-size: 13px;
+  color: #666666;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Навигацийн Сумнууд (blog carousel — scoped so it doesn't collide with the reviews carousel's .nav-arrow) */
+.blog-carousel-container .nav-arrow {
+  position: absolute;
+  top: 45%;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: #333333;
+  z-index: 10;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.blog-carousel-container .nav-arrow:hover {
+  background-color: #f8f8f8;
+  transform: scale(1.05);
+}
+
+.blog-carousel-container .left-arrow { left: -19px; }
+.blog-carousel-container .right-arrow { right: -19px; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .blog-card {
+    min-width: 100%;
+  }
+}
+
+/* --- TikTok Section --- */
+.tiktok-section{max-width:1240px;margin:60px auto;padding:0 16px;text-align:center}
+.tiktok-title{font-size:26px;font-weight:700;color:#111;margin-bottom:28px}
+
+.tiktok-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.tiktok-card{position:relative;height:520px;border-radius:12px;overflow:hidden;background:#111;color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+
+.card-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:blur(10px) brightness(.5);transform:scale(1.1)}
+.card-overlay{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-style:space-between;padding:12px;background:rgba(0,0,0,.3)}
+
+.tt-header{display:flex;align-items:center;gap:8px}
+.tt-avatar{width:28px;height:28px;background:#000;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:700;border:1px solid #333}
+.tt-user-info{display:flex;flex-direction:column;text-align:left;line-height:1.1}
+.tt-name{font-size:12px;font-weight:700}
+.tt-handle{font-size:10px;color:#ccc}
+.tt-logo{margin-left:auto;font-size:16px}
+
+.tt-center{margin:auto 0;text-align:center}
+.more-text{font-size:12px;font-weight:600;margin-bottom:8px;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+.video-preview{position:relative;width:140px;height:200px;margin:0 auto;border-radius:8px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.5)}
+.video-preview img{width:100%;height:100%;object-fit:cover}
+.play-btn{position:absolute;inset:0;margin:auto;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.4);border:none;color:#fff;font-size:12px;cursor:pointer;display:grid;place-items:center}
+.nav-icon{position:absolute;top:50%;transform:translateY(-50%);font-size:12px;color:rgba(255,255,255,.7)}
+.nav-icon.left{left:4px}
+.nav-icon.right{right:4px}
+
+.tt-side-actions{position:absolute;right:10px;bottom:70px;display:flex;flex-direction:column;gap:10px;font-size:11px}
+.act-item{display:flex;flex-direction:column;align-items:center;gap:2px}
+.act-item i{font-size:16px}
+
+.tt-footer{text-align:left;font-size:11px}
+.video-desc{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80%}
+.sound-track{font-size:10px;color:#ddd;margin:4px 0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80%}
+.progress-bar{width:100%;height:3px;background:rgba(255,255,255,.3);margin-bottom:6px;border-radius:2px}
+.progress-fill{width:100%;height:100%;background:#fe2c55}
+
+.controls{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#ddd}
+.ctrl-left{display:flex;align-items:center;gap:8px}
+
+@media(max-width:1024px){.tiktok-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.tiktok-grid{grid-template-columns:1fr}}
+
+/* --- Customer Reviews --- */
+.reviews-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.section-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 30px;
+}
+
+.carousel-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.carousel-viewport {
+  width: 100%;
+  overflow: hidden;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 24px;
+  transition: transform 0.4s ease-in-out;
+}
+
+/* Нэг дор 3 карт харагдана */
+.review-card {
+  min-width: calc((100% - 48px) / 3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* Зургийн контейнер (Томрох эффектийг рамнаас халиулахгүй) */
+.image-wrapper {
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  background-color: #f0f0f0;
+}
+
+/* Зургийн үндсэн стайл болон шилжилтийн хугацаа */
+.image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease-in-out; /* Алгуурхан (0.5 сек) томрох тохиргоо */
+}
+
+/* Хулганаар карт дээр очих (hover) үед зураг алгуур Zoom-лэгдэнэ */
+.review-card:hover .image-wrapper img {
+  transform: scale(1.08); /* 8%-иар томрно */
+}
+
+.review-title {
+  font-family: Inter, sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: #222222;
+  margin: 0px 0px 14px;
+}
+
+.stars {
+  color: #000000;
+  font-size: 27px;
+  letter-spacing: 2px;
+}
+
+.review-text {
+  text-align: center;
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  line-height: 2.5;
+  color: #000000;
+  margin-bottom: 24px;
+  padding: 0 10px;
+}
+
+.review-date {
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  color: #888888;
+  margin-top: auto;
+}
+
+/* Сумтай товчлуурууд */
+.nav-arrow {
+  position: absolute;
+  top: 120px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #333;
+  z-index: 10;
+  transition: all 0.2s ease;
+}
+
+.nav-arrow:hover {
+  background-color: #f5f5f5;
+}
+
+.left-arrow { left: -15px; }
+.right-arrow { right: -15px; }
+
+/* Доод цэгүүд */
+.dots-container {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 25px;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid #a3e000;
+  background-color: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.dot.active {
+  background-color: #a3e000;
+}
+
+/* Responsive (Дэлгэц жижгэрэхэд) */
+@media (max-width: 900px) {
+  .review-card {
+    min-width: 100%;
+  }
+  .left-arrow, .right-arrow {
+    display: none;
+  }
+}
+
+/* --- Discord Banner --- */
+.discord-section{width:100%;background:#0a0a0a;padding:40px 20px}
+.discord-container{max-width:1200px;min-height:360px;margin:0 auto;background:url('https://vgnlab.com/cdn/shop/files/ChatGPT_Image_2026_7_2_11_44_03_1.png?v=1782963866&width=2000') center/cover no-repeat;display:flex;align-items:center;padding:0 8vw;border-radius:4px}
+.discord-content{max-width:500px;color:#fff}
+.discord-title{font-size:clamp(28px,4vw,44px);font-weight:800;letter-spacing:.5px;margin-bottom:10px}
+.discord-line{width:40px;height:3px;background:#fff;margin-bottom:20px}
+.discord-desc{font-size:15px;line-height:1.6;color:#e0e0e0;margin-bottom:32px;font-weight:400}
+.discord-btn{display:inline-block;padding:10px;background:#000;color:#fff;border:1px solid #000;box-shadow:3px 3px 0 #c6e400;cursor:pointer;font-size:14px;font-weight:bold;text-decoration:none;transition:all 0.2s ease}
+.discord-btn:hover{background:#fff;box-shadow:3px 3px 0 #6f6f6f;color:#111;border:1px solid #333;transform:translateY(-5px)}
+
+@media(max-width:768px){.discord-container{padding:40px 24px;background-position:right center}}
+
+/* --- Newsletter --- */
+.newsletter-section{width:100%;background:#fff}
+
+/* Параллакс баннер */
+.newsletter-banner{
+  width:100%;
+  height:240px;
+  background-image:url('https://vgnlab.com/cdn/shop/files/VGN-v98PROV2_670x.jpg?v=1744941989');
+  background-attachment:fixed;
+  background-position:center;
+  background-size:contain;
+  background-repeat:no-repeat;
+  background-color:#1c1c1c;
+  display:flex;
+  align-items:center;
+  padding:0 8vw;
+  position:relative;
+}
+
+.newsletter-content{max-width:750px;width:100%;color:#fff}
+.newsletter-title{font-size:clamp(22px,3vw,32px);font-weight:700;margin-bottom:16px;letter-spacing:-.5px}
+
+.newsletter-form{display:flex;gap:0;max-width:680px}
+.newsletter-form input{
+  flex:1;
+  padding:14px 18px;
+  border:none;
+  outline:none;
+  background:rgba(235,235,235,.95);
+  font-size:14px;
+  color:#111;
+}
+.newsletter-form button{
+  padding:14px 28px;
+  background:#1a1a1a;
+  color:#fff;
+  border:1px solid #a3e000;
+  box-shadow:-3px 3px 0 #a3e000;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s;
+}
+.newsletter-form button:hover{background:#a3e000;color:#000;box-shadow:none}
+
+/* Икон болон 3 давуу тал хэсэг */
+.features-container{
+  max-width:1100px;
+  margin:0 auto;
+  padding:48px 20px;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  text-align:center;
+}
+.feature-item{display:flex;flex-direction:column;align-items:center;gap:16px;color:#111}
+.feature-icon{width:80px;height:80px;color:#111}
+.feature-item h3{font-size:25px;font-weight:500;letter-spacing:-.2px}
+
+@media(max-width:768px){
+  .features-container{flex-direction:column;gap:32px}
+  .newsletter-form{flex-direction:column;gap:12px}
+  .newsletter-form button{box-shadow:none}
+}
+
+/* --- Footer --- */
+.site-footer{
+  background:#111;
+  color:#a0a0a0;
+  position:relative;
+  overflow:hidden;
+  padding:60px 8vw 20px 8vw;
+  font-family:sans-serif;
+}
+
+/* 1. Арын VGN watermark бичгийг баруун доошоо болгосон хэсэг */
+.footer-watermark{
+  position:absolute;
+  right:2%;            /* Баруун шахаж өгөв */
+  bottom:-5%;          /* Доошоо шахаж өгөв */
+  font-size:22vw;      /* Хэмжээг нь бага зэрэг тааруулав */
+  font-weight:900;
+  color:rgba(255,255,255,0.03);
+  pointer-events:none;
+  user-select:none;
+  letter-spacing:-5px;
+  line-height:1;
+  z-index:1;
+}
+
+/* Үндсэн сетка */
+.footer-main{
+  display:grid;
+  grid-template-columns:1.2fr 0.8fr 0.8fr 1.5fr;
+  gap:40px;
+  position:relative;
+  z-index:2;
+  margin-bottom:60px;
+}
+
+.footer-heading{
+  color:#fff;
+  font-size:14px;
+  font-weight:800;
+  letter-spacing:0.5px;
+  margin-bottom:20px;
+  text-transform:uppercase;
+}
+
+.footer-links a:hover{
+  text-decoration:underline;
+}
+
+.footer-email{color:#d1d1d1;font-size:14px;margin-bottom:20px}
+
+/* Сошиал икон дугуйнууд */
+.footer-socials{display:flex;gap:10px;flex-wrap:wrap}
+.social-icon{
+  width:32px;
+  height:32px;
+  background:#fff;
+  color:#111;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  font-size:13px;
+  transition:.2s;
+}
+.social-icon:hover{
+  opacity:.8;transform:scale(1.05)
+}
+
+/* Цэсүүд */
+.footer-links{list-style:none;padding:0;margin:0}
+.footer-links li{margin-bottom:10px}
+.footer-links a{color:#a0a0a0;text-decoration:none;font-size:14px;transition:.2s}
+.footer-links a:hover{color:#fff}
+
+/* Newsletter хэсэг */
+.footer-text{font-size:13px;line-height:1.6;margin-bottom:16px;color:#a0a0a0}
+.footer-newsletter{display:flex;gap:8px}
+.footer-newsletter input{
+  flex:1;
+  padding:10px 14px;
+  border:none;
+  background:#fff;
+  font-size:13px;
+  outline:none;
+}
+.footer-newsletter button{
+  padding:10px 24px;
+  background:#fff;
+  color:#111;
+  border:none;
+  font-weight:800;
+  font-size:12px;
+  cursor:pointer;
+  letter-spacing:1px;
+}
+
+/* Доод хэсэг */
+.footer-bottom{
+  border-top:1px solid rgba(255,255,255,0.08);
+  padding-top:24px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:20px;
+  position:relative;
+  z-index:2;
+}
+
+.copyright{font-size:12px;color:#888}
+
+/* Төлбөрийн картууд */
+.payment-methods{display:flex;gap:6px;align-items:center}
+.pay-card{
+  height:22px;
+  padding:0 8px;
+  background:#fff;
+  border-radius:3px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:10px;
+  font-weight:bold;
+  color:#111;
+}
+.pay-card.visa{background:#0057b8;color:#fff;font-style:italic;font-weight:900}
+.pay-card.mc{
+  background:#000;
+  position:relative;
+  width:36px;
+}
+.pay-card.mc::before, .pay-card.mc::after{
+  content:'';
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  position:absolute;
+}
+.pay-card.mc::before{background:#eb001b;left:8px}
+.pay-card.mc::after{background:#f79e1b;right:8px;opacity:.8}
+.pay-card.amex{background:#007bc1;color:#fff}
+.pay-card.apple-pay, .pay-card.gpay, .pay-card.paypal, .pay-card.jcb{background:#fff;color:#111}
+
+@media(max-width:900px){
+  .footer-main{grid-template-columns:1fr 1fr;gap:30px}
+  .footer-bottom{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:550px){
+  .footer-main{grid-template-columns:1fr}
+  .footer-newsletter{flex-direction:column}
+}

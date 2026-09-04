@@ -1,0 +1,68 @@
+// Prisma schema for the VGN storefront database (PostgreSQL).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProductSection {
+  NEW_ARRIVALS
+  BEST_SELLERS
+  SPECIAL_OFFERS
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Product {
+  id          String         @id @default(cuid())
+  slug        String         @unique
+  section     ProductSection
+  title       String
+  href        String         @default("#")
+  badges      String // JSON-encoded string[]
+  image       String
+  hoverImage  String
+  alt         String
+  oldPrice    String
+  newPrice    String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  swatches    Swatch[]
+
+  @@index([section])
+}
+
+model Swatch {
+  id        String  @id @default(cuid())
+  name      String
+  image     String
+  price     String
+  oldPrice  String
+  position  Int     @default(0)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+
+  @@index([productId])
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  source    String   @default("newsletter") // "newsletter" | "footer"
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(USER)
+  createdAt    DateTime @default(now())
+}
