@@ -1,0 +1,36 @@
+# docker compose up --build   ->  http://localhost:3001
+# Postgres + migrations + starter catalog (seeded on first run only) + the app.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: vgn
+      POSTGRES_PASSWORD: vgn
+      POSTGRES_DB: vgn
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      # TCP check on purpose: the image's init phase runs a socket-only temp server.
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U vgn -d vgn"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  app:
+    build: .
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: postgresql://vgn:vgn@db:5432/vgn
+      # Dev-only defaults. Override via shell env or .env before exposing this anywhere.
+      JWT_SECRET: ${JWT_SECRET:-dev-only-jwt-secret-change-me-before-deploying}
+      ADMIN_BOOTSTRAP_SECRET: ${ADMIN_BOOTSTRAP_SECRET:-change-me}
+      SEED_IF_EMPTY: "1"
+    depends_on:
+      db:
+        condition: service_healthy
+    # exec so node is PID 1 and gets SIGTERM for server.js's graceful shutdown.
+    command: sh -c "npx prisma migrate deploy && npx prisma db seed && exec node server.js"
+
+volumes:
+  pgdata:

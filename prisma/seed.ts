@@ -10,6 +10,12 @@ const sectionMap: Record<string, ProductSection> = {
 };
 
 async function main() {
+  // Set by docker-compose so restarts don't wipe admin edits; plain `npm run db:seed` still resets.
+  if (process.env.SEED_IF_EMPTY && (await prisma.product.count()) > 0) {
+    console.log("Products already exist, skipping seed.");
+    return;
+  }
+
   console.log(`Seeding ${staticProducts.length} products...`);
 
   await prisma.swatch.deleteMany();

@@ -3,6 +3,17 @@
 Next.js (App Router) + TypeScript storefront backed by PostgreSQL via Prisma,
 with custom JWT-based auth and an admin area for managing the product catalog.
 
+## Run with Docker (zero setup)
+
+```bash
+docker compose up --build
+```
+
+Starts Postgres, applies migrations, seeds the starter catalog (first run only) and
+serves the site at http://localhost:3001. `JWT_SECRET` and `ADMIN_BOOTSTRAP_SECRET`
+have dev defaults in `docker-compose.yml` — override them via `.env` or shell env
+before exposing this anywhere. `docker compose down -v` wipes the database.
+
 ## Setup (you already have Postgres + an initial migration applied)
 
 ```bash
