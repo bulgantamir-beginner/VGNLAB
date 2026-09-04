@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Suspense } from "react";
 import Image from "next/image";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { navLinks } from "@/lib/data";
 
-export default function Header() {
+function HeaderContent() {
   const headerRef = useRef<HTMLElement>(null);
   const router = useRouter();
   const pathname = usePathname();
@@ -128,5 +128,13 @@ export default function Header() {
         </div>
       </nav>
     </header>
+  );
+}
+
+export default function Header() {
+  return (
+    <Suspense fallback={<header className="site_header" id="siteHeader" />}>
+      <HeaderContent />
+    </Suspense>
   );
 }

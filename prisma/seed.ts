@@ -1,12 +1,12 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, ProductSection } from "@prisma/client";
 import { products as staticProducts } from "../lib/data";
 
 const prisma = new PrismaClient();
 
-const sectionMap: Record<string, string> = {
-  "new-arrivals": "NEW_ARRIVALS",
-  "best-sellers": "BEST_SELLERS",
-  "special-offers": "SPECIAL_OFFERS",
+const sectionMap: Record<string, ProductSection> = {
+  "new-arrivals": ProductSection.NEW_ARRIVALS,
+  "best-sellers": ProductSection.BEST_SELLERS,
+  "special-offers": ProductSection.SPECIAL_OFFERS,
 };
 
 async function main() {

@@ -56,7 +56,9 @@ export async function POST(request: NextRequest) {
         alt: data.alt,
         oldPrice: data.oldPrice,
         newPrice: data.newPrice,
-        swatches: { create: data.swatches.map((s, i) => ({ ...s, position: i })) },
+        swatches: {
+          create: data.swatches?.map((s, i) => ({ ...s, position: i })) ?? [],
+        },
       },
       include: { swatches: true },
     });
