@@ -1,9 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
-import { verifySession } from "@/lib/auth";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { verifySession } from "@/lib/auth"; // Update path if auth.ts is at root e.g. "./auth"
 
-// Runs on the Edge runtime, before the request reaches any route/page —
-// this is the right place for guards that should apply across many paths
-// at once, as opposed to per-route checks in individual route.ts files.
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
