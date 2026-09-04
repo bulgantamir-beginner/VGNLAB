@@ -44,27 +44,27 @@ export async function POST(request: NextRequest) {
   const data = parsed.data;
 
   try {
-    const product = await prisma.product.create({
-      data: {
-        slug: data.slug,
-        section: data.section,
-        title: data.title,
-        href: data.href,
-        badges: JSON.stringify(data.badges),
-        image: data.image,
-        hoverImage: data.hoverImage,
-        alt: data.alt,
-        oldPrice: data.oldPrice,
-        newPrice: data.newPrice,
-        swatches: {
-          create: data.swatches?.map((s, i) => ({ ...s, position: i })) ?? [],
-        },
-      },
-      include: { swatches: true },
-    });
-    return NextResponse.json({ product }, { status: 201 });
-  } catch (err) {
-    console.error("POST /api/admin/products failed:", err);
-    return NextResponse.json({ error: "Failed to create product." }, { status: 500 });
-  }
+  const product = await prisma.product.create({
+    data: {
+      slug: data.slug,
+      section: data.section,
+      title: data.title,
+      href: data.href,
+      badges: JSON.stringify(data.badges),
+      image: data.image,
+      hoverImage: data.hoverImage,
+      alt: data.alt,
+      oldPrice: data.oldPrice,
+      newPrice: data.newPrice,
+      swatches: data.swatches?.length
+        ? { create: data.swatches.map((s, i) => ({ ...s, position: i })) }
+        : undefined,
+    },
+    include: { swatches: true },
+  });
+  return NextResponse.json({ product }, { status: 201 });
+} catch (err) {
+  console.error("POST /api/admin/products failed:", err);
+  return NextResponse.json({ error: "Failed to create product." }, { status: 500 });
+}
 }
